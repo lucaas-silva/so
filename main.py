@@ -18,8 +18,10 @@ if __name__ == "__main__":
         offset = tasks[i]["offset"]
         computation_time = tasks[i]["computation_time"]
         period_time = tasks[i]["period_time"]
+        quantum = tasks[i]["quantum"]
+        period = tasks[i]["period"]
 
-        temp = Task(offset, computation_time, period_time)
+        temp = Task(offset, computation_time, period_time, quantum, period)
         taskList.append(temp)
 
     Schedule(simulation_time, scheduler_name, tasks_number, taskList)
