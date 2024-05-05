@@ -4,7 +4,7 @@ from schedule import Schedule
 from task import Task
 
 if __name__ == "__main__":
-    with open("file.json", "r") as file:
+    with open("RR.json", "r") as file:
         file_contents = json.load(file)
 
     simulation_time = file_contents["simulation_time"]
