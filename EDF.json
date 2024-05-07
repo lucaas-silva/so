@@ -8,21 +8,21 @@
             "computation_time": 20,
             "period_time": 100,
             "quantum": 0,
-            "deadline":100
+            "deadline":0
         },
         {
             "offset": 0,
             "computation_time": 40,
             "period_time": 100,
             "quantum": 0,
-            "deadline":100
+            "deadline":0
         },
         {
             "offset": 0,
             "computation_time": 100,
             "period_time": 350,
             "quantum": 0,
-            "deadline": 350
+            "deadline":0
         }
     ]
 }

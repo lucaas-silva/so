@@ -4,7 +4,7 @@ from schedule import Schedule
 from task import Task
 
 if __name__ == "__main__":
-    with open("RR.json", "r") as file:
+    with open("RM.json", "r") as file:
         file_contents = json.load(file)
 
     simulation_time = file_contents["simulation_time"]
@@ -19,9 +19,9 @@ if __name__ == "__main__":
         computation_time = tasks[i]["computation_time"]
         period_time = tasks[i]["period_time"]
         quantum = tasks[i]["quantum"]
-        period = tasks[i]["period"]
+        deadline = tasks[i]["deadline"]
 
-        temp = Task(offset, computation_time, period_time, quantum, period)
+        temp = Task(offset, computation_time, period_time, quantum, deadline)
         taskList.append(temp)
 
     Schedule(simulation_time, scheduler_name, tasks_number, taskList)

@@ -20,9 +20,6 @@ class Schedule:
             self.EDF()
 
     def create_table(self):
-        """
-        Função que criara tabelas com informações referente ao escalonamento. Ainda não implementada
-        """
         df = pd.DataFrame(self.taskList)
         print(df)
 
@@ -36,6 +33,17 @@ class Schedule:
         u = sum([task.computation_time / task.period_time for task in self.taskList])
         return f"{(u) * 100}%"
 
+    def waiting_time(self):
+        for task in self.taskList:
+            task.waiting_time = task.turnaround_time - task.computation_time
+        return sum([task.waiting_time for task in self.taskList]) / len(self.taskList)
+
+    def max_waiting_time(self):
+        return max([task.waiting_time for task in self.taskList])
+
+    def min_waiting_time(self):
+        return min([task.waiting_time for task in self.taskList])
+
     def FCFS(self):
         def turnaround_time(self):
             computation_time_total = 0
@@ -43,17 +51,6 @@ class Schedule:
                 computation_time_total += task.computation_time
                 task.turnaround_time = computation_time_total - task.offset
             return sum([task.turnaround_time for task in self.taskList]) / len(self.taskList)
-
-        def waiting_time(self):
-            for task in self.taskList:
-                task.waiting_time = task.turnaround_time - task.computation_time
-            return sum([task.waiting_time for task in self.taskList]) / len(self.taskList)
-
-        def max_waiting_time(self):
-            return max([task.waiting_time for task in self.taskList])
-
-        def min_waiting_time(self):
-            return min([task.waiting_time for task in self.taskList])
 
         def starvation(self):
             res = self.taskList[-1].period_time - self.taskList[-1].turnaround_time
@@ -64,16 +61,13 @@ class Schedule:
             return starvation
 
         self.print_order()
-        print(f"Utilization: {self.utilization()}")
-        print(f"turnaround time: {turnaround_time(self)}")
-        print(f"waiting time: {waiting_time(self)}")
-        print(f"max waiting time:{max_waiting_time(self)}")
-        print(f"min waiting time:{min_waiting_time(self)}")
-        print(f"starvation:{starvation(self)}")
+        self.utilization()
+        turnaround_time(self)
+        self.waiting_time()
+        self.max_waiting_time()
+        self.min_waiting_time()
+        starvation(self)
         # self.create_table()
-        """
-        O turnaround e waiting time de cada tarefa não estão sendo printados. Mas estão sendo definidos como atributos de cada um dos objetos taks.
-        """
 
     def RR(self):
         def turnaround_time(self):
@@ -105,19 +99,6 @@ class Schedule:
         def average_turnaround_time(self):
             return sum([task.turnaround_time for task in self.taskList]) / len(self.taskList)
 
-        def waiting_time(self):
-            for task in self.taskList:
-                task.waiting_time = task.turnaround_time - task.computation_time_fix
-
-        def average_waiting_time(self):
-            return sum([task.waiting_time for task in self.taskList]) / len(self.taskList)
-
-        def max_waiting_time(self):
-            return max([task.waiting_time for task in self.taskList])
-
-        def min_waiting_time(self):
-            return min([task.waiting_time for task in self.taskList])
-
         def starvation(self):
             turnaround_max = max([task.turnaround_time for task in self.taskList])
             res = self.taskList[-1].period_time - turnaround_max
@@ -129,25 +110,18 @@ class Schedule:
             return starvation
 
         self.print_order()
-        print(f"utilization: {self.utilization()}")
+        self.utilization()
         turnaround_time(self)
-        print(f"avarage turnaround time: {average_turnaround_time(self)}")
-        waiting_time(self)
-        print(f"avarage waiting time: {average_waiting_time(self)}")
-        print(f"max waiting time:{max_waiting_time(self)}")
-        print(f"min waiting time:{min_waiting_time(self)}")
-        print(f"starvation:{starvation(self)}")
-        """
-        O turnaround e waiting time de cada tarefa não estão sendo printados. Mas estão sendo definidos como atributos de cada um dos objetos taks.
-        """
+        average_turnaround_time(self)
+        self.waiting_time()
+        self.waiting_time()
+        self.max_waiting_time()
+        self.min_waiting_time()
+        starvation(self)
 
     def RM(self):
-        """
-        Ainda não terminei!
-        """
-
         def schedule_test(self):
-            x = sum([task.computation_time / task.period for task in self.taskList])
+            x = sum([task.computation_time / task.period_time for task in self.taskList])
             y = len(self.taskList) * (2 ** (1 / len(self.taskList)) - 1)
             if x <= y:
                 return True
@@ -155,19 +129,72 @@ class Schedule:
                 return False
 
         def sort_taskList(self):
-            self.taskList = sorted(self.taskList, key=attrgetter("_period"))
+            self.taskList = sorted(self.taskList, key=attrgetter("_period_time"))
             print(self.taskList)
 
         def utilization(self):
-            return sum([task.computation_time / task.period for task in self.taskList])
+            return sum([task.computation_time / task.period_time for task in self.taskList])
 
         def turnaround_time(self):
-            pass
+            time_aux = 0
+            t_ant = 0
+            original_deadlines = [task.deadline for task in self.taskList]
+            print(original_deadlines)
+            deadlines = []
+            for deadline in original_deadlines:
+                deadlines.extend([deadline * i for i in range(1, 6)])
+            print(deadlines)
+            # deadlines = [task.deadline for task in self.taskList]
+            i = 0
+            # deadline = deadlines[i]
+            for i, task in enumerate(self.taskList):
+                while task.computation_time > 0:
+                    if deadline != 0:
+                        t_ant += self.taskList[deadlines.index(deadline)].computation_time
+                        time_aux += t_ant
+                    if task.computation_time + t_ant < deadline:
+                        time_aux = t_ant + task.computation_time
+                        task.turnaround_time = task.computation_time + t_ant
+                        task.computation_time = 0
+                        t_ant = task.turnaround_time
+                    else:
+                        task.turnaround_time = deadline
+                        task.computation_time -= deadline - t_ant
+                        deadline = deadlines[i + 1]
 
-        print(schedule_test(self))
+            # for task in self.taskList:
+            # task.turnaround_time = self.taskList[-1].period_time
+
+        schedule_test(self)
         sort_taskList(self)
         self.print_order()
-        print(utilization(self))
+        utilization(self)
+        turnaround_time(self)
+        self.waiting_time()
+        self.waiting_time()
+        self.max_waiting_time()
+        self.min_waiting_time()
 
     def EDF(self):
-        pass
+        def schedule_test(self):
+            x = sum([task.computation_time / task.period_time for task in self.taskList])
+
+            if x <= 1:
+                return True
+            else:
+                return False
+
+        def sort_taskList(self):
+            self.taskList = sorted(self.taskList, key=attrgetter("_deadline"))
+
+        def utilization(self):
+            return sum([task.computation_time / task.period_time for task in self.taskList])
+
+        schedule_test(self)
+        sort_taskList(self)
+        self.print_order()
+        utilization(self)
+        self.waiting_time()
+        self.waiting_time()
+        self.max_waiting_time()
+        self.min_waiting_time()

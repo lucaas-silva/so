@@ -1,5 +1,5 @@
 class Task:
-    def __init__(self, offset, computation_time, period_time, quantum, period):
+    def __init__(self, offset, computation_time, period_time, quantum, deadline):
         self._offset = offset
         self._computation_time = computation_time
         self._period_time = period_time
@@ -7,7 +7,7 @@ class Task:
         self._turnaround_time = 0
         self._computation_time_fix = computation_time
         self._waiting_time = None
-        self._period = period
+        self._deadline = deadline
 
     @property
     def offset(self):
@@ -54,12 +54,12 @@ class Task:
         self._waiting_time = x
 
     @property
-    def period(self):
-        return self._period
+    def dealine(self):
+        return self._deadline
 
-    @period.setter
-    def period(self, x):
-        self._period = x
+    @dealine.setter
+    def deadline(self, x):
+        self._deadline = x
 
     def __str__(self):
         # return f"{self.offset} {self.computation_time_fix} {self.period_time} {self.quantum} {self.turnaround_time} {self._waiting_time}"
